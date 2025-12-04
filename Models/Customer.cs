@@ -16,7 +16,7 @@ namespace DBProject_Shop.Models
         [Required, MaxLength(100)]
         public string CustomerEmail { get; set; } = string.Empty;
         [Required, MaxLength(100)]
-        public string CustomerAdress {  get; set; } = string.Empty;
+        public string CustomerAddress {  get; set; } = string.Empty;
         public int PhoneNumber { get; set; }
         public List<Order> OrdersList { get; set; } = new();
     }

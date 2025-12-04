@@ -12,7 +12,7 @@ namespace DBProject_Shop
     {
         public DbSet<Customer> Customers => Set<Customer>();
         public DbSet<Order> Orders => Set<Order>();
-        public DbSet<OrderRow>OrderRows => Set<OrderRow>();
+        public DbSet<OrderRow> OrderRows => Set<OrderRow>();
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Category> Categories => Set<Category>();
 
@@ -36,7 +36,7 @@ namespace DBProject_Shop
                     .IsRequired()
                     .HasMaxLength(100);
 
-                c.Property(c => c.CustomerAdress)
+                c.Property(c => c.CustomerAddress)
                     .IsRequired()
                     .HasMaxLength(100);
 
@@ -63,7 +63,7 @@ namespace DBProject_Shop
 
             modelBuilder.Entity<OrderRow>(r =>
             {
-                r.HasKey(o => o.OrderId);
+                r.HasKey(o => o.OrderRowId);
 
                 r.Property(r => r.Quantity).IsRequired();
 
@@ -97,8 +97,7 @@ namespace DBProject_Shop
                 p.HasOne(p => p.Category)
                     .WithMany(p => p.ProductsList)
                     .HasForeignKey(p => p.CategoryId)
-                    .OnDelete(DeleteBehavior.Restrict);
-                
+                    .OnDelete(DeleteBehavior.Restrict);                
             });
 
             modelBuilder.Entity<Category>(c =>
@@ -110,7 +109,6 @@ namespace DBProject_Shop
                     .HasMaxLength(100);
 
                 c.HasIndex(c => c.CategoryName).IsUnique();
-
             });
         }
     }
