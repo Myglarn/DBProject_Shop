@@ -5,9 +5,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using DBProject_Shop.Helpers;
 
 namespace DBProject_Shop.Data
 {
+    /// <summary>
+    /// Class for with a method for seeding the database 
+    /// </summary>
     public static class SeedingData
     {
         public static async Task SeedAsync()
@@ -19,8 +23,8 @@ namespace DBProject_Shop.Data
             if (!await db.Customers.AnyAsync())
             {
                 db.Customers.AddRange(
-                    new Customer { CustomerName = "Christopher Petti", CustomerAddress = "Sicklingsvägen 7", CustomerEmail = "christopher.petti@gmail.com", PhoneNumber = "0707799793"},
-                    new Customer { CustomerName = "Arber Mulolli", CustomerAddress = "Programmerargatan 27", CustomerEmail = "Abbe@hotmail.com", PhoneNumber = "0765554575"}
+                    new Customer { CustomerName = "Christopher Petti", CustomerAddress = EncryptionHelper.Encrypt("Sicklingsvägen 7"), CustomerEmail = EncryptionHelper.Encrypt("christopher.petti@gmail.com"), PhoneNumber = EncryptionHelper.Encrypt("0707799793"), Password = EncryptionHelper.Encrypt("198610") },
+                    new Customer { CustomerName = "Arber Mulolli", CustomerAddress = EncryptionHelper.Encrypt("Programmerargatan 27"), CustomerEmail = EncryptionHelper.Encrypt("Abbe@hotmail.com"), PhoneNumber = EncryptionHelper.Encrypt("0765554575"), Password = EncryptionHelper.Encrypt("12345") }
                     );
                 await db.SaveChangesAsync();
                 Console.WriteLine("Seeded db with customers");

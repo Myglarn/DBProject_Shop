@@ -6,9 +6,12 @@ using DBProject_Shop.Helpers;
 
 
 Console.WriteLine("DB: " + Path.Combine(AppContext.BaseDirectory, "shop.db"));
+// Seeds the database
 await SeedingData.SeedAsync();
 
-
+//-----------------
+// Switches for all menus with CLI
+//----------------- 
 while (true)
 {
     Console.WriteLine("\nCommands: Customers (1) | Orders (2) | Products (3) | Categories (4) | Exit (5)");
@@ -61,7 +64,7 @@ static async Task CustomerMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Customer (1) | List Customers (2) | Edit Customer (3) | Delete Customer (4) | Exit (5) ");
+        Console.WriteLine("\nCommands: Add customer (1) | List customer details (2) | Edit customer (3) | Delete customer (4) | Exit (5) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var customerCommand = Console.ReadLine()?.Trim();
@@ -76,7 +79,7 @@ static async Task CustomerMenuAsync()
                 break;
 
             case "2":
-                await CustomerHelpers.ListCustomersAsync();
+                await CustomerHelpers.ListCustomerDetailsAsync();
                 break;
 
             case "3":

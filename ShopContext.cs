@@ -44,6 +44,8 @@ namespace DBProject_Shop
 
                 c.Property(c => c.PhoneNumber);
 
+                c.Property(c => c.Password).IsRequired();                
+
                 c.HasIndex(c => c.CustomerEmail).IsUnique();
 
                 c.HasMany(c => c.OrdersList);
