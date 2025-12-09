@@ -11,8 +11,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace DBProject_Shop.Migrations
 {
     [DbContext(typeof(ShopContext))]
-    [Migration("20251204204047_InitialMigration")]
-    partial class InitialMigration
+    [Migration("20251204223124_NewInitMigration")]
+    partial class NewInitMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -65,8 +65,8 @@ namespace DBProject_Shop.Migrations
                         .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("INTEGER");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("TEXT");
 
                     b.HasKey("CustomerId");
 

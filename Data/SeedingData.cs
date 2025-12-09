@@ -19,8 +19,8 @@ namespace DBProject_Shop.Data
             if (!await db.Customers.AnyAsync())
             {
                 db.Customers.AddRange(
-                    new Customer { CustomerName = "Christopher Petti", CustomerAddress = "Sicklingsvägen 7", CustomerEmail = "christopher.petti@gmail.com", PhoneNumber = 0707799793},
-                    new Customer { CustomerName = "Arber Mulolli", CustomerAddress = "Programmerargatan 27", CustomerEmail = "Abbe@hotmail.com", PhoneNumber = 0765554575}
+                    new Customer { CustomerName = "Christopher Petti", CustomerAddress = "Sicklingsvägen 7", CustomerEmail = "christopher.petti@gmail.com", PhoneNumber = "0707799793"},
+                    new Customer { CustomerName = "Arber Mulolli", CustomerAddress = "Programmerargatan 27", CustomerEmail = "Abbe@hotmail.com", PhoneNumber = "0765554575"}
                     );
                 await db.SaveChangesAsync();
                 Console.WriteLine("Seeded db with customers");
@@ -54,7 +54,7 @@ namespace DBProject_Shop.Data
                     new Product { ProductName = "Spinner - 20g", ProductPrice = 55m, StockQuantity = 126, CategoryId = lures.CategoryId },
                     new Product { ProductName = "Jigg - 100g", ProductPrice = 230m, StockQuantity = 90, CategoryId = lures.CategoryId },
                     new Product { ProductName = "Fishing hat", ProductPrice = 500m, StockQuantity = 250, CategoryId = clothes.CategoryId },
-                    new Product { ProductName = "Fishing jacket", ProductPrice = 3000m, StockQuantity = 190, CategoryId = clothes.CategoryId }
+                    new Product { ProductName = "Fishing jacket", ProductPrice = 3000m, StockQuantity = 190, CategoryId = clothes.CategoryId }                    
                     );
                 await db.SaveChangesAsync();
                 Console.WriteLine("Seeded db with products");

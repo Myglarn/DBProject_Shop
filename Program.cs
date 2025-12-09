@@ -6,20 +6,6 @@ using DBProject_Shop.Helpers;
 
 
 Console.WriteLine("DB: " + Path.Combine(AppContext.BaseDirectory, "shop.db"));
-//Console.WriteLine("Starting database seeding/migrations...");
-//var seedTask = SeedingData.SeedAsync();
-//var timeout = Task.Delay(TimeSpan.FromSeconds(20));
-//var completed = await Task.WhenAny(seedTask, timeout);
-//if (completed == timeout)
-//{
-//    Console.WriteLine("Seeding/migration did not complete within 20s. You can continue, but investigate seeding.");
-//}
-//else
-//{
-//    // re-await to propagate exceptions if seedTask faulted
-//    await seedTask;
-//    Console.WriteLine("Seeding/migration finished.");
-//}
 await SeedingData.SeedAsync();
 
 
@@ -42,19 +28,20 @@ while (true)
     switch (choice)
     {
         case "1":
-            await CustomerMenu();
+            await CustomerMenuAsync();
             break;
 
         case "2":
+            await OrderMenuAsync();
 
             break;
 
         case "3":
-
+            await ProductMenuAsync();
             break;
         
         case "4":
-
+            await CategoryMenuAsync();
             break;
 
         case "5":
@@ -70,7 +57,7 @@ while (true)
 //-----------------
 // CUSTOMER MENU
 //-----------------
-static async Task CustomerMenu()
+static async Task CustomerMenuAsync()
 {
     while (true)
     {
@@ -114,38 +101,46 @@ static async Task CustomerMenu()
 //-----------------
 // ORDER MENU
 //-----------------
-static async Task OrderMenu()
+static async Task OrderMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | Edit Order (3) | Delete Order (4) | Exit (5) ");
+        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | List Orders paged (3) | Find order by customer (4) | Delete Order (5) | Exit (6) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
-        var orderCommand = Console.ReadLine()?.Trim();
+        var orderCommand = Console.ReadLine()?.Trim() ?? string.Empty;
         if (orderCommand == null)
         {
-            Console.WriteLine("Invalid input");
+            Console.WriteLine("Invalid input, please try again");
         }
         switch (orderCommand)
         {
             case "1":
+                await OrderHelpers.AddOrderAsync();
                 break;
 
             case "2":
+                await OrderHelpers.ListOrdersAsync();
                 break;
 
             case "3":
+                await OrderHelpers.OrdersPagedAsync();
                 break;
 
             case "4":
+                await OrderHelpers.ListCustomerOrdersAsync();
                 break;
 
             case "5":
+                await OrderHelpers.DeleteOrderAsync();
+                break;
+
+            case "6":
                 Console.WriteLine("Returning to main menu...");
                 return;
 
             default:
-                Console.WriteLine("Invalid input");
+                Console.WriteLine("Invalid input, please try again");
                 break;
         }
     }
@@ -154,11 +149,11 @@ static async Task OrderMenu()
 //-----------------
 // PRODUCT MENU
 //-----------------
-static async Task ProductMenu()
+static async Task ProductMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Product (1) | List Product (2) | Edit Product (3) | Delete Product (4) | Exit (5) ");
+        Console.WriteLine("\nCommands: Add Product (1) | List Product (2) | Edit Product (3) | Find products by category (4) | Delete Product (5) | Exit (6) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var prodCommand = Console.ReadLine()?.Trim();
@@ -169,18 +164,25 @@ static async Task ProductMenu()
         switch (prodCommand)
         {
             case "1":
+                await ProductHelpers.AddProductAsync();
                 break;
 
             case "2":
+                await ProductHelpers.ListProductsAsync();
                 break;
 
             case "3":
+                await ProductHelpers.EditProductAsync();
                 break;
 
             case "4":
+                await ProductHelpers.FindProductsByCategory();
+                break;
+            case "5":
+                await ProductHelpers.DeleteProductAsync();
                 break;
 
-            case "5":
+            case "6":
                 Console.WriteLine("Returning to main menu...");
                 return;
 
@@ -194,7 +196,7 @@ static async Task ProductMenu()
 //-----------------
 // CATEGORY MENU
 //-----------------
-static async Task CategoryMenu()
+static async Task CategoryMenuAsync()
 {
     while (true)
     {
@@ -209,15 +211,19 @@ static async Task CategoryMenu()
         switch (catCommand)
         {
             case "1":
+                await CategoryHelpers.AddCategoryAsync();
                 break;
 
             case "2":
+                await CategoryHelpers.ListCategoriesAsync();
                 break;
 
             case "3":
+                await CategoryHelpers.EditCategoryAsync();
                 break;
 
             case "4":
+                await CategoryHelpers.DeleteCategoryAsync();
                 break;
 
             case "5":

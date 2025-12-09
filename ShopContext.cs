@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Security;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -20,6 +21,7 @@ namespace DBProject_Shop
         {
             var dbPath = Path.Combine(AppContext.BaseDirectory, "shop.db");
             optionsBuilder.UseSqlite($"Filename = {dbPath}");
+            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -39,6 +41,8 @@ namespace DBProject_Shop
                 c.Property(c => c.CustomerAddress)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                c.Property(c => c.PhoneNumber);
 
                 c.HasIndex(c => c.CustomerEmail).IsUnique();
 
@@ -107,6 +111,8 @@ namespace DBProject_Shop
                 c.Property(c => c.CategoryName)
                     .IsRequired()
                     .HasMaxLength(100);
+
+                c.HasMany(c => c.ProductsList).WithOne(c => c.Category);
 
                 c.HasIndex(c => c.CategoryName).IsUnique();
             });

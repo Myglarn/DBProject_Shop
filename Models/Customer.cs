@@ -11,13 +11,18 @@ namespace DBProject_Shop.Models
     {
         // PK
         public int CustomerId {  get; set; }
+        
         [Required, MaxLength(100)]
-        public string CustomerName { get; set; } = string.Empty;
+        public string? CustomerName { get; set; } = string.Empty;
+        
         [Required, MaxLength(100)]
-        public string CustomerEmail { get; set; } = string.Empty;
+        public string? CustomerEmail { get; set; } = string.Empty;
+        
         [Required, MaxLength(100)]
-        public string CustomerAddress {  get; set; } = string.Empty;
-        public int PhoneNumber { get; set; }
+        public string? CustomerAddress {  get; set; } = string.Empty;
+        
+        public string? PhoneNumber { get; set; } = string.Empty;
+        
         public List<Order> OrdersList { get; set; } = new();
     }
 }

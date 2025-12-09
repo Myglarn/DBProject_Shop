@@ -11,9 +11,10 @@ namespace DBProject_Shop.Models
     {
         // PK
         public int CategoryId { get; set; }        
-        [Required, MaxLength(100)]
-        public string? CategoryName { get; set; } = string.Empty;
-        public Product? Product { get; set; }
+        
+        [Required, MaxLength(100)]        
+        public string? CategoryName { get; set; } = string.Empty;       
+        
         public List<Product> ProductsList { get; set; } = new();
     }
 }

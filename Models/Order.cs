@@ -11,14 +11,20 @@ namespace DBProject_Shop.Models
     {
         // PK
         public int OrderId { get; set; }
+
         // FK
         public int CustomerId { get; set; }
+
         [Required]
         public DateTime OrderDate { get; set; }
+        
         [Required]
         public string? Status { get; set; } = string.Empty;
+        
         public decimal TotalAmount { get; set; }
+        
         public Customer? Customer { get; set; } 
+        
         public List<OrderRow> OrderRowsList { get; set; } = new();
     }
 }
