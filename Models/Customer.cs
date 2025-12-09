@@ -22,6 +22,9 @@ namespace DBProject_Shop.Models
         public string? CustomerAddress {  get; set; } = string.Empty;
         
         public string? PhoneNumber { get; set; } = string.Empty;
+
+        [Required]
+        public string? Password { get; set; } = string.Empty;
         
         public List<Order> OrdersList { get; set; } = new();
     }

@@ -11,9 +11,15 @@ using System.Threading.Tasks;
 
 namespace DBProject_Shop.Helpers
 {
+    /// <summary>
+    /// Helper class containing various methods
+    /// with complete CRUD operations for products 
+    /// </summary>
     public static class ProductHelpers
     {
+        //-----------------
         // CREATE
+        //-----------------
         public static async Task AddProductAsync() 
         {
             using var db = new ShopContext();
@@ -96,7 +102,9 @@ namespace DBProject_Shop.Helpers
             }
         }
 
+        //-----------------
         // READ
+        //-----------------
         public static async Task ListProductsAsync()
         {
             using var db = new ShopContext();
@@ -136,10 +144,9 @@ namespace DBProject_Shop.Helpers
                 return;
             }
             var catName = await db.Categories.FirstAsync(c => c.CategoryId == cId);
-            var prods = await db.Products.Where(c => c.CategoryId == cId)                                               
-                                             .ToListAsync();
+            var prods = await db.Products.Where(c => c.CategoryId == cId).ToListAsync();
 
-            Console.WriteLine($"Product in the \"{catName.CategoryName}\" category");
+            Console.WriteLine($"Products in the \"{catName.CategoryName}\" category");
             Console.WriteLine("Product Id | Product name | Price | Stock quantity");
             foreach (var prod in prods)
             {
@@ -148,7 +155,9 @@ namespace DBProject_Shop.Helpers
 
         }
 
+        //-----------------
         // UPDATE
+        //-----------------
         public static async Task EditProductAsync()
         {
             using var db = new ShopContext();
@@ -220,7 +229,9 @@ namespace DBProject_Shop.Helpers
             }
         }
 
+        //-----------------
         // DELETE
+        //-----------------
         public static async Task DeleteProductAsync()
         {
             using var db = new ShopContext();
