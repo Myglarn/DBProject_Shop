@@ -17,10 +17,9 @@ namespace DBProject_Shop.Helpers
         public static async Task AddCustomerAsync()
         {
             using var db = new ShopContext();
-
             Console.WriteLine("Please fill in the following details:");
             Console.WriteLine();
-            Console.WriteLine("Name: ");
+            Console.WriteLine("Name (Required): ");
             var name = Console.ReadLine()?.Trim() ?? string.Empty;
             if (string.IsNullOrEmpty(name) || name.Length > 100)
             {
@@ -28,7 +27,7 @@ namespace DBProject_Shop.Helpers
                 return;
             }
 
-            Console.WriteLine("Email:");
+            Console.WriteLine("Email (Required):");
             var email = Console.ReadLine()?.Trim() ?? string.Empty;
             if (string.IsNullOrEmpty(email) || email.Length > 200)
             {
@@ -41,7 +40,7 @@ namespace DBProject_Shop.Helpers
                 return;
             }
 
-            Console.WriteLine("Address (street name and number):");
+            Console.WriteLine("Address (Required. Street name and number):");
             var address = Console.ReadLine()?.Trim() ?? string.Empty;
             if (string.IsNullOrEmpty(address) || address.Length > 100)
             {
@@ -49,11 +48,19 @@ namespace DBProject_Shop.Helpers
                 return;
             }
 
-            db.Customers.Add(new Customer 
-            { 
-                CustomerName = name, 
-                CustomerEmail = email, 
-                CustomerAddress = address 
+            Console.WriteLine("Phone number (Optional):");
+            var phone = Console.ReadLine()?.Trim() ?? string.Empty;
+            if (string.IsNullOrEmpty(phone))
+            {
+                phone = "No phone number found";
+            }
+
+            db.Customers.Add(new Customer
+            {
+                CustomerName = name,
+                CustomerEmail = email,
+                CustomerAddress = address,
+                PhoneNumber = phone
             });
 
             try
@@ -65,6 +72,7 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
             }
+            
         }
 
         // READ
@@ -75,13 +83,20 @@ namespace DBProject_Shop.Helpers
             var customers = await db.Customers.AsNoTracking()
                                               .OrderBy(x => x.CustomerId)
                                               .ToListAsync();
-            Console.WriteLine("Customer Id | Name | Email | City");
+
+            if (!await db.Customers.AnyAsync())
+            {
+                Console.WriteLine("No customers found");
+                return;
+            }
+            Console.WriteLine("Customer Id | Name | Email | Address | Phone number");
             foreach (var customer in customers)
             {
-                Console.WriteLine($"{customer.CustomerId} | {customer.CustomerName} | {customer.CustomerEmail} | {customer.CustomerAddress}");
+                Console.WriteLine($"{customer.CustomerId} | {customer.CustomerName} | {customer.CustomerEmail} | {customer.CustomerAddress} | {customer.PhoneNumber}");
             }
-        }
+        }        
 
+        // UPDATE
         public static async Task EditCustomerAsync()
         {
             using var db = new ShopContext();
@@ -99,42 +114,74 @@ namespace DBProject_Shop.Helpers
             }
             var customerToEdit = await db.Customers.FirstOrDefaultAsync(c => c.CustomerId == customerId);
 
-            Console.WriteLine("Please choose an option to edit. Type in: Name | Email | Address");
-            var choice = Console.ReadLine();
-            if (choice == "Name")
+            Console.WriteLine("Please choose an option to edit. Type in: Name (1) | Email (2) | Address (3) | Phone (4)");
+            var choice = Console.ReadLine()?.Trim().ToLower() ?? string.Empty;            
+            if (choice != "1" && choice != "2" && choice != "3" && choice != "4")
             {
-                Console.WriteLine($"Current name: {customerToEdit.CustomerName} ");
-                Console.WriteLine("Please type in the new name");
-                var newName = Console.ReadLine()?.Trim() ?? string.Empty;
-                if (!string.IsNullOrEmpty(newName))
-                {
-                    customerToEdit.CustomerName = newName;
-                }
-            }
-            else if (choice == "Email")
-            {
-                Console.WriteLine($"Current email: {customerToEdit.CustomerEmail}");
-                Console.WriteLine("Please type in the new email");
-                var newEmail = Console.ReadLine()?.Trim() ?? string.Empty;
-                if (!string.IsNullOrEmpty(newEmail))
-                {
-                    customerToEdit.CustomerEmail = newEmail;
-                }
-            }
-            else if (choice == "Address")
-            {
-                Console.WriteLine($"Current Address: {customerToEdit.CustomerAddress}");
-                Console.WriteLine("Please type in the new address");
-                var newCity = Console.ReadLine()?.Trim() ?? string.Empty;
-                if (!string.IsNullOrEmpty(newCity))
-                {
-                    customerToEdit.CustomerAddress = newCity;
-                }
-            }
-            else if (choice != "Address" && choice != "Email" && choice != "Name")
-            {
-                Console.WriteLine("Please type in the correct command");
+                Console.WriteLine("Invalid input, please try again");
                 return;
+            }
+
+            switch (choice)
+            {
+                case "1":
+                    Console.WriteLine($"Current name: {customerToEdit.CustomerName} ");
+                    Console.WriteLine("Please type in the new name");
+                    var newName = Console.ReadLine()?.Trim() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(newName))
+                    {
+                        customerToEdit.CustomerName = newName;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No changes were made");
+                    }
+                    break;
+
+                case "2":
+                    Console.WriteLine($"Current email: {customerToEdit.CustomerEmail}");
+                    Console.WriteLine("Please type in the new email");
+                    var newEmail = Console.ReadLine()?.Trim() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(newEmail))
+                    {
+                        customerToEdit.CustomerEmail = newEmail;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No changes were made");
+                    }
+                    break;
+
+                case "3":
+                    Console.WriteLine($"Current Address: {customerToEdit.CustomerAddress}");
+                    Console.WriteLine("Please type in the new address");
+                    var newCity = Console.ReadLine()?.Trim() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(newCity))
+                    {
+                        customerToEdit.CustomerAddress = newCity;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No changes were made");
+                    }
+                    break;
+
+                case "4":
+                    Console.WriteLine($"Current Phone number: {customerToEdit.PhoneNumber}");
+                    Console.WriteLine("Please type in the new phone number");
+                    var newNumber = Console.ReadLine()?.Trim() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(newNumber))
+                    {
+                        customerToEdit.PhoneNumber = newNumber;
+                    }
+                    else
+                    {
+                        Console.WriteLine("No changes were made");
+                    }
+                    break;
+                default:
+
+                    break;
             }
 
             try
@@ -149,6 +196,7 @@ namespace DBProject_Shop.Helpers
             }
         }
 
+        // DELETE
         public static async Task DeleteCustomerAsync()
         {
             using var db = new ShopContext();

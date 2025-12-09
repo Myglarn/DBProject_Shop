@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace DBProject_Shop.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialMigration : Migration
+    public partial class NewInitMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -20,7 +20,7 @@ namespace DBProject_Shop.Migrations
                     CustomerName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     CustomerEmail = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     CustomerAddress = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
-                    PhoneNumber = table.Column<int>(type: "INTEGER", nullable: false)
+                    PhoneNumber = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
                 {
