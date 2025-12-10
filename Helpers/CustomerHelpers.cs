@@ -51,7 +51,7 @@ namespace DBProject_Shop.Helpers
             }
             if (await db.Customers.AnyAsync(x => x.CustomerEmail == email))
             {
-                Console.WriteLine("Email allready exists, type in a different email adress.");
+                Console.WriteLine("Email allready exists, type in a different email address.");
                 return;
             }
 
@@ -83,6 +83,7 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("Password is required!");
                 return;
             }
+
             db.Customers.Add(new Customer
             {
                 CustomerName = name,
@@ -92,7 +93,6 @@ namespace DBProject_Shop.Helpers
                 Password = EncryptionHelper.Encrypt(password)
 
             });
-
             try
             {
                 await db.SaveChangesAsync();
@@ -259,6 +259,7 @@ namespace DBProject_Shop.Helpers
                             if (!string.IsNullOrEmpty(newName))
                             {
                                 customerToEdit.CustomerName = newName;
+                                Console.WriteLine("Customer name edited");
                             }
                             else
                             {
@@ -274,6 +275,7 @@ namespace DBProject_Shop.Helpers
                             if (!string.IsNullOrEmpty(newEmail))
                             {
                                 customerToEdit.CustomerEmail = EncryptionHelper.Encrypt(newEmail);
+                                Console.WriteLine("Customer email edited");
                             }
                             else
                             {
@@ -289,6 +291,7 @@ namespace DBProject_Shop.Helpers
                             if (!string.IsNullOrEmpty(newAddress))
                             {
                                 customerToEdit.CustomerAddress = EncryptionHelper.Encrypt(newAddress);
+                                Console.WriteLine("Customer address edited");
                             }
                             else
                             {
@@ -304,6 +307,7 @@ namespace DBProject_Shop.Helpers
                             if (!string.IsNullOrEmpty(newNumber))
                             {
                                 customerToEdit.PhoneNumber = EncryptionHelper.Encrypt(newNumber);
+                                Console.WriteLine("Customer phone number edited");
                             }
                             else
                             {
@@ -319,6 +323,7 @@ namespace DBProject_Shop.Helpers
                             if (!string.IsNullOrEmpty(newPass))
                             {
                                 customerToEdit.Password = EncryptionHelper.Encrypt(newPass);
+                                Console.WriteLine("Customer password edited");
                             }
                             else
                             {
