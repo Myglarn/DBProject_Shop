@@ -31,11 +31,23 @@ namespace DBProject_Shop.Helpers
             Console.WriteLine("-----------");
             Console.WriteLine("Please choose a category name:");
             var catName = Console.ReadLine()?.Trim() ?? string.Empty;
+            if (await db.Categories.AnyAsync(x => x.CategoryName == catName))
+            {
+                Console.WriteLine("Category name allready exists, type in a different name.");
+                return;
+            }
 
             var category = new Category { CategoryName = catName };
-
             db.Categories.Add(category);
-            await db.SaveChangesAsync();
+            try
+            {
+                await db.SaveChangesAsync();
+                Console.WriteLine("Category added!");
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+            }            
 
             Console.WriteLine();
             Console.WriteLine("-----------");
@@ -133,11 +145,24 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("-----------");
                 Console.WriteLine("Choose a new category name:");
                 var newName = Console.ReadLine()?.Trim() ?? string.Empty;
-                
-                categoryToEdit.CategoryName = newName;                
-                await db.SaveChangesAsync();
+                if (await db.Categories.AnyAsync(x => x.CategoryName == newName))
+                {
+                    Console.WriteLine("Category name allready exists, type in a different name.");
+                    return;
+                }
 
-                Console.WriteLine($"Category name edited, new name is: {categoryToEdit.CategoryName}");
+                categoryToEdit.CategoryName = newName;
+                try
+                {
+                    await db.SaveChangesAsync();
+                    Console.WriteLine();
+                    Console.WriteLine("-----------");
+                    Console.WriteLine($"Category name edited, new name is: {categoryToEdit.CategoryName}");
+                }
+                catch (DbUpdateException ex)
+                {
+                    Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+                }                
             }
             else if (choice == "2")
             {
@@ -168,18 +193,32 @@ namespace DBProject_Shop.Helpers
             Console.WriteLine();
             Console.WriteLine("-----------");
             Console.WriteLine("Please choose a category to delete (id#)");
+            var catList = await db.Categories.AsNoTracking().ToListAsync();
+            foreach (var cat in catList)
+            {
+                Console.WriteLine($"{cat.CategoryId} - {cat.CategoryName}");
+            }
+
             if (!int.TryParse(Console.ReadLine(), out var cId))
             {
                 Console.WriteLine("Invalid input, please use numbers");
                 return;
-            }
-            var categoryToDelete = await db.Categories.FirstAsync(c => c.CategoryId == cId);
+            }            
+            
+            var categoryToDelete = await db.Categories.FirstAsync(c => c.CategoryId == cId);            
+            db.Categories.Remove(categoryToDelete);
 
-            Console.WriteLine();
-            Console.WriteLine("-----------");
-            Console.WriteLine($"Category {categoryToDelete.CategoryName} deleted!");
-            db.Categories.Remove(categoryToDelete);            
-            await db.SaveChangesAsync();            
+            try
+            {
+                Console.WriteLine();
+                Console.WriteLine("-----------");
+                Console.WriteLine($"Category {categoryToDelete.CategoryName} deleted!");
+                await db.SaveChangesAsync();                
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+            }
         }
     }
 }

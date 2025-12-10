@@ -28,30 +28,49 @@ namespace DBProject_Shop.Helpers
             {
 
                 Console.WriteLine();
+                Console.WriteLine("-----------");
                 Console.WriteLine("Enter product name: ");
                 var prodName = Console.ReadLine()?.Trim() ?? string.Empty;
                 if (string.IsNullOrEmpty(prodName))
                 {
                     continue;
                 }
+                if (await db.Products.AnyAsync(x => x.ProductName == prodName))
+                {
+                    Console.WriteLine("Product name allready exists, type in a different name.");
+                    return;
+                }
 
                 Console.WriteLine();
+                Console.WriteLine("-----------");
                 Console.WriteLine("Enter product price: ");
                 if (!decimal.TryParse(Console.ReadLine(), out var prodPrice))
                 {
                     Console.WriteLine("Invalid input, please use numbers");
                     continue;
                 }
+                else if (prodPrice < 0)
+                {
+                    Console.WriteLine("Product price can't be negative, please try agian");
+                    return;
+                }
 
                 Console.WriteLine();
+                Console.WriteLine("-----------");
                 Console.WriteLine("Enter initial stock quantity");
                 if (!int.TryParse(Console.ReadLine(), out var qty))
                 {
                     Console.WriteLine("Invalid input, please use numbers");
                     continue;
                 }
+                else if (qty < 0)
+                {
+                    Console.WriteLine("Quantity can't be negative, please try again");
+                    return;
+                }
 
                 Console.WriteLine();
+                Console.WriteLine("-----------");
                 Console.WriteLine("Please input the category id you wish to add the product to");
                 Console.WriteLine();
                 var categories = await db.Categories.AsNoTracking().ToListAsync();
@@ -79,9 +98,12 @@ namespace DBProject_Shop.Helpers
                     CategoryId = catId
                 };
                 db.Products.Add(product);
+
                 try
                 {
                     await db.SaveChangesAsync();
+                    Console.WriteLine();
+                    Console.WriteLine("-----------");
                     Console.WriteLine($"Product added!");
                 }
                 catch (DbUpdateException ex)
@@ -89,6 +111,8 @@ namespace DBProject_Shop.Helpers
                     Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
                 }
 
+                Console.WriteLine();
+                Console.WriteLine("-----------");
                 Console.WriteLine("Would you like to add another product? (y/n)");
                 choice = Console.ReadLine()?.Trim() ?? string.Empty;
                 if (choice == "y")
@@ -110,7 +134,7 @@ namespace DBProject_Shop.Helpers
             using var db = new ShopContext();
 
             var products = await db.Products.AsNoTracking()
-                                            .OrderBy(x => x.CategoryId)
+                                            .OrderBy(x => x.ProductId)
                                             .ToListAsync();
 
             if (!await db.Products.AnyAsync())
@@ -119,7 +143,9 @@ namespace DBProject_Shop.Helpers
                 return;
             }
 
-            Console.WriteLine("Listing all products (Sorted by category)");
+            Console.WriteLine();
+            Console.WriteLine("-----------");
+            Console.WriteLine("Listing all products");
             Console.WriteLine("Product Id | Product name | Stock quantity | Product price");
             foreach (var prod in products)
             {
@@ -152,7 +178,6 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine($"{prod.ProductId} | {prod.ProductName} | {prod.ProductPrice} | {prod.StockQuantity}");
             }
-
         }
 
         //-----------------
@@ -161,6 +186,9 @@ namespace DBProject_Shop.Helpers
         public static async Task EditProductAsync()
         {
             using var db = new ShopContext();
+
+            Console.WriteLine();
+            Console.WriteLine("-----------");
             Console.WriteLine("Please choose the product you wish to edit (id#)");
             await ListProductsAsync();
 
@@ -168,65 +196,118 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Invalid input, please use numbers");
             }
+
             var prodToEdit = await db.Products.FirstAsync(p => p.ProductId == pId);
             if (!await db.Products.AnyAsync(p => p.ProductId == pId))
             {
                 Console.WriteLine("No such product found!");
-            }
+            }            
 
-            Console.WriteLine("Choose what you want to edit:");
-            Console.WriteLine("Name (1) | Price (2) | Stock quantity (3)");
-            var choice = Console.ReadLine() ?? string.Empty;
-            if (choice != "1" && choice != "2" && choice != "3")
+            var whileChoice = "";
+            while (whileChoice != "n")
             {
-                Console.WriteLine("Invalid input, please try again");
-                return;
-            }
+                Console.WriteLine();
+                Console.WriteLine("-----------");
+                Console.WriteLine("Choose what you want to edit:");
+                Console.WriteLine("Name (1) | Price (2) | Stock quantity (3)");
+                var choice = Console.ReadLine() ?? string.Empty;
+                if (choice != "1" && choice != "2" && choice != "3")
+                {
+                    Console.WriteLine("Invalid input, please try again");
+                    return;
+                }
 
-            switch (choice)
-            {
-                case "1":
-                    Console.WriteLine("Please choose a new product name:");
-                    var newName = Console.ReadLine()?.Trim() ?? string.Empty;
-                    prodToEdit.ProductName = newName;
+                switch (choice)
+                {
+                    case "1":
+                        Console.WriteLine();
+                        Console.WriteLine("-----------");
+                        Console.WriteLine("Please choose a new product name:");
+                        var newName = Console.ReadLine()?.Trim() ?? string.Empty;                        
+                        if (await db.Products.AnyAsync(p => p.ProductName == newName))
+                        {
+                            Console.WriteLine("Product name allready exists, please try again");
+                            return;
+                        }
 
-                    await db.SaveChangesAsync();
-                    Console.WriteLine($"Product name edited, new product name is now: {prodToEdit.ProductName}");
-                    break;
-
-                case "2":
-                    Console.WriteLine("Please choose a new product price:");
-                    if (!decimal.TryParse(Console.ReadLine(), out var newPrice))
-                    {
-                        Console.WriteLine("Invalid input, please try again");
-                        return;
-                    }
-                    prodToEdit.ProductPrice = newPrice;
-
-                    await db.SaveChangesAsync();
-                    Console.WriteLine($"Product price edited, new product price is now: {prodToEdit.ProductPrice}");
-                    break;
-
-                case "3":
-                    Console.WriteLine("Please choose a new stock quantity:");
-                    if (!int.TryParse(Console.ReadLine(), out var newQty))
-                    {
-                        Console.WriteLine("Invalid input, please try again");
-                        return;
-                    }
-                    if (newQty < 0)
-                    {
-                        Console.WriteLine("Stock quantity can't be a negative number, please try again");
-                        return;
-                    }
-                    prodToEdit.StockQuantity = newQty;
-
-                    await db.SaveChangesAsync();
-                    Console.WriteLine($"Stock quantity edited, new quantity is: {prodToEdit.StockQuantity}");
+                        prodToEdit.ProductName = newName;
+                        try
+                        {
+                            await db.SaveChangesAsync();
+                            Console.WriteLine();
+                            Console.WriteLine("-----------");
+                            Console.WriteLine($"Product name edited, new product name is now: {prodToEdit.ProductName}");
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+                        }
                         break;
-                default:
-                    break;
-            }
+
+                    case "2":
+                        Console.WriteLine();
+                        Console.WriteLine("-----------");
+                        Console.WriteLine("Please choose a new product price:");
+                        if (!decimal.TryParse(Console.ReadLine(), out var newPrice))
+                        {
+                            Console.WriteLine("Invalid input, please try again");
+                            return;
+                        }
+                        if (newPrice < 0)
+                        {
+                            Console.WriteLine("Price can't be a negative number");
+                        }
+                        prodToEdit.ProductPrice = newPrice;
+
+                        try
+                        {
+                            await db.SaveChangesAsync();
+                            Console.WriteLine();
+                            Console.WriteLine("-----------");
+                            Console.WriteLine($"Product price edited, new product price is now: {prodToEdit.ProductPrice}");
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+                        }
+                        break;
+
+                    case "3":
+                        Console.WriteLine();
+                        Console.WriteLine("-----------");
+                        Console.WriteLine("Please choose a new stock quantity:");
+                        if (!int.TryParse(Console.ReadLine(), out var newQty))
+                        {
+                            Console.WriteLine("Invalid input, please try again");
+                            return;
+                        }
+                        if (newQty < 0)
+                        {
+
+                            Console.WriteLine("Stock quantity can't be a negative number, please try again");
+                            return;
+                        }
+                        prodToEdit.StockQuantity = newQty;
+
+                        try
+                        {
+                            await db.SaveChangesAsync();
+                            Console.WriteLine();
+                            Console.WriteLine("-----------");
+                            Console.WriteLine($"Stock quantity edited, new quantity is: {prodToEdit.StockQuantity}");
+                        }
+                        catch (DbUpdateException ex)
+                        {
+                            Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+                Console.WriteLine("-----------");
+                Console.WriteLine("Would you like to edit something else? (y/n)");
+                whileChoice = Console.ReadLine()?.Trim() ?? string.Empty;
+            }            
         }
 
         //-----------------
@@ -235,6 +316,9 @@ namespace DBProject_Shop.Helpers
         public static async Task DeleteProductAsync()
         {
             using var db = new ShopContext();
+
+            Console.WriteLine();
+            Console.WriteLine("-----------");
             Console.WriteLine("Please select a product to delete (id#)");
             if (!int.TryParse(Console.ReadLine(), out var pId))
             {
@@ -245,8 +329,18 @@ namespace DBProject_Shop.Helpers
             var prodToDelete = await db.Products.FirstAsync(p => p.ProductId == pId);
 
             db.Products.Remove(prodToDelete);
-            await db.SaveChangesAsync();
-            Console.WriteLine($"Product {prodToDelete.ProductName} deleted!");
+            try
+            {
+                await db.SaveChangesAsync();
+                Console.WriteLine();
+                Console.WriteLine("-----------");
+                Console.WriteLine($"Product {prodToDelete.ProductName} deleted!");
+            }
+            catch (DbUpdateException ex)
+            {
+                Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
+            }
+            
         }
     }
 }

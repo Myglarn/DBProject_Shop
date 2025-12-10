@@ -14,6 +14,9 @@ await SeedingData.SeedAsync();
 //----------------- 
 while (true)
 {
+    Console.WriteLine();
+    Console.WriteLine("Main menu");
+    Console.WriteLine("-----------");
     Console.WriteLine("\nCommands: Customers (1) | Orders (2) | Products (3) | Categories (4) | Exit (5)");
     Console.WriteLine(">");
     Console.WriteLine("Please choose a command");
@@ -64,7 +67,10 @@ static async Task CustomerMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add customer (1) | List customer details (2) | Edit customer (3) | Delete customer (4) | Exit (5) ");
+        Console.WriteLine();
+        Console.WriteLine("Customer Menu");
+        Console.WriteLine("-----------");
+        Console.WriteLine("\nCommands: Add customer (1) | List customer details (2) | Edit customer (3) | Delete customer (4) | Exit to main menu (5) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var customerCommand = Console.ReadLine()?.Trim();
@@ -108,7 +114,10 @@ static async Task OrderMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | List Orders paged (3) | Find order by customer (4) | Delete Order (5) | Exit (6) ");
+        Console.WriteLine();
+        Console.WriteLine("Order menu");
+        Console.WriteLine("-----------");
+        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | List Orders paged (3) | Find order by customer (4) | Delete Order (5) | Exit to main menu (6) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var orderCommand = Console.ReadLine()?.Trim() ?? string.Empty;
@@ -156,7 +165,10 @@ static async Task ProductMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Product (1) | List Product (2) | Edit Product (3) | Find products by category (4) | Delete Product (5) | Exit (6) ");
+        Console.WriteLine();
+        Console.WriteLine("Product menu");
+        Console.WriteLine("-----------");
+        Console.WriteLine("\nCommands: Add Product (1) | List Product (2) | Edit Product (3) | Find products by category (4) | Delete Product (5) | Exit to main menu (6) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var prodCommand = Console.ReadLine()?.Trim();
@@ -203,7 +215,10 @@ static async Task CategoryMenuAsync()
 {
     while (true)
     {
-        Console.WriteLine("\nCommands: Add Category (1) | List Categories (2) | Edit Category (3) | Delete Category (4) | Exit (5) ");
+        Console.WriteLine();
+        Console.WriteLine("Category menu");
+        Console.WriteLine("-----------");
+        Console.WriteLine("\nCommands: Add Category (1) | List Categories (2) | Edit Category (3) | Delete Category (4) | Exit to main menu (5) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var catCommand = Console.ReadLine()?.Trim();

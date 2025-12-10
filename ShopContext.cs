@@ -20,8 +20,7 @@ namespace DBProject_Shop
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             var dbPath = Path.Combine(AppContext.BaseDirectory, "shop.db");
-            optionsBuilder.UseSqlite($"Filename = {dbPath}");
-            
+            optionsBuilder.UseSqlite($"Filename = {dbPath}");            
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
