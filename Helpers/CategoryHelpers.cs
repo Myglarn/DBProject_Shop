@@ -79,10 +79,11 @@ namespace DBProject_Shop.Helpers
         /// <returns></returns>
         public static async Task ListCategoriesAsync()
         {
-            using var db = new ShopContext();
+            using var db = new ShopContext();            
+
             var categories = await db.Categories.Include(c => c.ProductsList)                                                                
-                                                .ToListAsync();                                                
-            
+                                                .ToListAsync();          
+
             if (!await db.Categories.AnyAsync())
             {
                 Console.WriteLine("No categories found");

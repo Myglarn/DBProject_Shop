@@ -21,6 +21,7 @@ namespace DBProject_Shop.Models
         [Required]
         public string? Status { get; set; } = string.Empty;
         
+        [Required]
         public decimal TotalAmount { get; set; }
         
         public Customer? Customer { get; set; } 
