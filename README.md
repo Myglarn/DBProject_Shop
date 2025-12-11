@@ -1,7 +1,7 @@
 # DBProject_Shop
 
 ## Description
-This project is a database application in EF Core for an e-shop. It contains models for Customers, Orders with order rows, products and categories with realtions for all models. Symetric encryption using an XOR-Chiper, security using a simple password that is encrypted. CRUD operations for most models and CLI-commands for easy navigation.
+This project is a database application in EF Core for an e-shop. It contains models for Customers, Orders with order rows, products and categories with relations for all models. Symetric encryption using an XOR-Cipher, security using a simple password that is encrypted. CRUD operations for most models and CLI-commands for easy navigation.
 
 ## Key Features Demonstrated in This Project
 
@@ -47,7 +47,7 @@ Triggers for calculating total amount when:
 
 - Status is always set to pending and never changed.
   A solution could be to create a method or trigger that updates the status of orders based on
-  time passed since the order creation.
+  time passed since the order creation for a simple simulation of the staus changing.
      
 
 ## How to use the application
@@ -80,12 +80,8 @@ Full CRUD functionality for:
 - Categories
 - Products
 - Orders is missing EDIT functionality
-
-### Encryption
-
-Encryption Helper with methods for symetric encryption/decryption using XOR-cipher for certain customer information 
+- Encryption Helper with methods for encryption/decryption for certain customer information 
 with password protection, which is also encrypted.
-
 
 ## Credits
 
@@ -97,3 +93,4 @@ Christopher Petti
 - SQLite
 - EF CORE
 - .Net 8
+
