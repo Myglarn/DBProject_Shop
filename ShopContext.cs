@@ -16,6 +16,7 @@ namespace DBProject_Shop
         public DbSet<OrderRow> OrderRows => Set<OrderRow>();
         public DbSet<Product> Products => Set<Product>();
         public DbSet<Category> Categories => Set<Category>();
+        public DbSet<OrderSummary> OrderSummaries => Set<OrderSummary>();
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
@@ -25,6 +26,13 @@ namespace DBProject_Shop
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<OrderSummary>(e =>
+            {
+                e.HasNoKey();
+
+                e.ToView("OrderSummary");
+            });
+
             modelBuilder.Entity<Customer>(c =>
             {
                 c.HasKey(c => c.CustomerId);
@@ -58,7 +66,9 @@ namespace DBProject_Shop
 
                 o.Property(o => o.Status).IsRequired();
 
-                o.Property(o => o.TotalAmount).IsRequired();
+                o.Property(o => o.TotalAmount).IsRequired();                
+
+                o.HasIndex(o => o.CustomerId);                
 
                 o.HasOne(o => o.Customer)
                     .WithMany(o => o.OrdersList)

@@ -122,12 +122,12 @@ namespace DBProject_Shop.Helpers
             var customers = await db.Customers.AsNoTracking()
                                               .OrderBy(x => x.CustomerId)
                                               .ToListAsync();
-
             if (!await db.Customers.AnyAsync())
             {
                 Console.WriteLine("No customers found");
                 return;
             }
+
             Console.WriteLine("Customer Id | Name | Email (Encrypted) | Address (Encrypted) | Phone number (Encrypted)");
             foreach (var customer in customers)
             {
@@ -174,6 +174,7 @@ namespace DBProject_Shop.Helpers
             }
             else
             {
+                Console.WriteLine("Returning to customer menu");
                 return;
             }
         }

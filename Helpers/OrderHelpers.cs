@@ -119,8 +119,7 @@ namespace DBProject_Shop.Helpers
                     break;
                 }
             }
-            order.OrderRowsList.AddRange(orderRows);
-            order.TotalAmount = orderRows.Sum(o => o.UnitPrice * o.Quantity);
+            order.OrderRowsList.AddRange(orderRows);            
 
             db.Orders.Add(order);            
             try
@@ -145,10 +144,12 @@ namespace DBProject_Shop.Helpers
         public static async Task ListOrdersAsync()
         {
             using var db = new ShopContext();
+                        
             var orders = await db.Orders.AsNoTracking()
-                                        .Include(x => x.Customer).Include(x => x.OrderRowsList)                                        
+                                        .Include(x => x.Customer)                                        
                                         .OrderBy(x => x.OrderId)
-                                        .ToListAsync();
+                                        .ToListAsync();            
+
             if (!await db.Orders.AnyAsync())
             {
                 Console.WriteLine("No orders found");
@@ -211,10 +212,10 @@ namespace DBProject_Shop.Helpers
             Console.WriteLine("Orders sorted by Date");
             Console.WriteLine();
             Console.WriteLine("-----------");
-            Console.WriteLine("Order date | Order Id | Total amount | Status");
+            Console.WriteLine("Order date | Order id | Customer id | Customer name | Total amount | Status");
             foreach (var order in orders)
             {
-                Console.WriteLine($"{order.OrderDate:d} | {order.OrderId} | {order.TotalAmount} | {order.Status}");
+                Console.WriteLine($"{order.OrderDate:d} | {order.OrderId} | {order.CustomerId} | {order.Customer?.CustomerName} | {order.TotalAmount} | {order.Status}");
             }
         }
 
@@ -244,11 +245,11 @@ namespace DBProject_Shop.Helpers
 
             Console.WriteLine();
             Console.WriteLine("-----------");
-            Console.WriteLine("Please enter the password for this Customer");
+            Console.WriteLine("Please enter the password for this customer");
             var pass = Console.ReadLine()?.Trim() ?? string.Empty;
             
             var customer = await db.Customers.FirstAsync(c => c.CustomerId == cId);
-            var orders = await db.Orders.Where(o => o.CustomerId == cId).Include(o => o.OrderRowsList).ToListAsync();
+            var orders = await db.Orders.Where(o => o.CustomerId == cId).ToListAsync();
             if (pass == EncryptionHelper.Decrypt(customer.Password))
             {
                 Console.WriteLine();
@@ -283,21 +284,14 @@ namespace DBProject_Shop.Helpers
                     var orderToView = await db.Orders.Include(o => o.OrderRowsList)
                                                      .ThenInclude(o => o.Product)
                                                      .FirstOrDefaultAsync(o => o.OrderId == orderId);
-
-                    Console.WriteLine();
-                    Console.WriteLine("-----------");
-                    Console.WriteLine("Order ID | Order date | Status | Total Amount ");
-                    Console.WriteLine("-----------");
-                    Console.WriteLine($"{orderToView.OrderId} | {orderToView.OrderDate:d} | {orderToView.Status} | {orderToView.TotalAmount}");
-                    Console.WriteLine();
                     
                     Console.WriteLine("-----------");
-                    Console.WriteLine($"Products in order #{orderToView.OrderId}");
-                    Console.WriteLine("Product Id | Product name | Unit price | Quantity");                    
+                    Console.WriteLine($"Products in order #{orderToView.OrderId} - Order date: {orderToView.OrderDate}");
+                    Console.WriteLine("Product Id | Product name | Unit price | Quantity | Total amount");                    
                     Console.WriteLine("-----------");
                     foreach (var product in orderToView.OrderRowsList)
                     {
-                        Console.WriteLine($"{product.ProductId} | {product.Product?.ProductName} | {product.UnitPrice} | {product.Quantity}");
+                        Console.WriteLine($"{product.ProductId} | {product.Product?.ProductName} | {product.UnitPrice} | {product.Quantity} | {orderToView.TotalAmount} ");
                     }
                 }
                 else
@@ -308,8 +302,27 @@ namespace DBProject_Shop.Helpers
             else
             {
                 Console.WriteLine("Invalid password, please try again!");
+                return;
             }
-        }        
+        }
+
+        /// <summary>
+        /// Method for listing orders with total amount using
+        /// the created view "OrderSummary"
+        /// </summary>
+        /// <returns></returns>
+        public static async Task OrderSummaryAsync()
+        {
+            using var db = new ShopContext();
+
+            var summaries = await db.OrderSummaries.OrderByDescending(o => o.OrderDate).ToListAsync();
+
+            Console.WriteLine("Order Id | Order date | Total amount | Customer name");
+            foreach (var sum in summaries)
+            {
+                Console.WriteLine($"{sum.OrderId} | {sum.OrderDate} | {sum.TotalAmount} | {sum.CustomerName}");
+            }
+        }
 
         //-----------------
         // DELETE
@@ -346,7 +359,6 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
             }
-
         }
     }
 }

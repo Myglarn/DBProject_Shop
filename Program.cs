@@ -23,13 +23,9 @@ while (true)
     var choice = Console.ReadLine()?.Trim();
     if (string.IsNullOrEmpty(choice))
     {
+        Console.WriteLine("No input, please make a choice");
         continue;
-    }
-    if (choice != "1" && choice != "2" && choice != "3" && choice != "4" && choice != "5")
-    {
-        Console.WriteLine("You need to choose either 1, 2, 3, 4 or 5");
-        continue;
-    }    
+    }        
 
     switch (choice)
     {
@@ -55,8 +51,8 @@ while (true)
             return;
 
         default:
-            Console.WriteLine("Invalid input");
-            return;
+            Console.WriteLine("Invalid input, please try again!");
+            continue;
     }
 }
 
@@ -101,8 +97,8 @@ static async Task CustomerMenuAsync()
                 return;
 
             default:
-                Console.WriteLine("Invalid input");
-                break;
+                Console.WriteLine("Invalid input, please try again!");
+                continue;
         }
     }
 }
@@ -117,7 +113,7 @@ static async Task OrderMenuAsync()
         Console.WriteLine();
         Console.WriteLine("Order menu");
         Console.WriteLine("-----------");
-        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | List Orders paged (3) | Find order by customer (4) | Delete Order (5) | Exit to main menu (6) ");
+        Console.WriteLine("\nCommands: Add Order (1) | List Orders (2) | List Orders paged (3) | Find order by customer (4) | Order summary (5)\n| Delete Order (6) | Exit to main menu (7) ");
         Console.WriteLine(">");
         Console.WriteLine("Please choose a command");
         var orderCommand = Console.ReadLine()?.Trim() ?? string.Empty;
@@ -144,16 +140,20 @@ static async Task OrderMenuAsync()
                 break;
 
             case "5":
-                await OrderHelpers.DeleteOrderAsync();
+                await OrderHelpers.OrderSummaryAsync();
                 break;
 
             case "6":
+                await OrderHelpers.DeleteOrderAsync();
+                break;
+
+            case "7":
                 Console.WriteLine("Returning to main menu...");
                 return;
 
             default:
                 Console.WriteLine("Invalid input, please try again");
-                break;
+                continue;
         }
     }
 }
@@ -174,7 +174,7 @@ static async Task ProductMenuAsync()
         var prodCommand = Console.ReadLine()?.Trim();
         if (prodCommand == null)
         {
-            Console.WriteLine("Invalid input");
+            Console.WriteLine("Invalid input, please try again");
         }
         switch (prodCommand)
         {
@@ -202,8 +202,8 @@ static async Task ProductMenuAsync()
                 return;
 
             default:
-                Console.WriteLine("Invalid input");
-                break;
+                Console.WriteLine("Invalid input, please try again");
+                continue;
         }
     }
 }
@@ -249,8 +249,8 @@ static async Task CategoryMenuAsync()
                 return;
 
             default:
-                Console.WriteLine("Invalid input");
-                break;
+                Console.WriteLine("Invalid input, please try again");
+                continue;
         }
     }
 }
