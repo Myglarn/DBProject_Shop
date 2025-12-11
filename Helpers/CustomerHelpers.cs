@@ -110,9 +110,9 @@ namespace DBProject_Shop.Helpers
         //-----------------
 
         /// <summary>
-        /// Method for listing customers with encrypted sensitive information
-        /// Password protection for viewing a certain customers information
-        /// After log in sensitive information is decrypted
+        /// Method for listing customers.
+        /// Password protection for viewing a certain customers information,
+        /// after log in sensitive information is decrypted
         /// </summary>
         /// <returns></returns>
         public static async Task ListCustomerDetailsAsync()
@@ -273,6 +273,12 @@ namespace DBProject_Shop.Helpers
                             Console.WriteLine($"Current email: {EncryptionHelper.Decrypt(customerToEdit.CustomerEmail)}");
                             Console.WriteLine("Please type in the new email");
                             var newEmail = Console.ReadLine()?.Trim() ?? string.Empty;
+                            if (await db.Customers.AnyAsync(x => x.CustomerEmail == newEmail))
+                            {
+                                Console.WriteLine("Email allready exists, type in a different email address.");
+                                return;
+                            }
+
                             if (!string.IsNullOrEmpty(newEmail))
                             {
                                 customerToEdit.CustomerEmail = EncryptionHelper.Encrypt(newEmail);
@@ -376,7 +382,6 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("Invalid input, please use numbers");
                 return;
             }
-
             if (!await db.Customers.AnyAsync(c => c.CustomerId == customerId))
             {
                 Console.WriteLine("Customer not found!");

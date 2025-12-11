@@ -8,11 +8,9 @@ using System.Threading.Tasks;
 namespace DBProject_Shop.Models
 {
     public class Order
-    {
-        // PK
+    {       
         public int OrderId { get; set; }
-
-        // FK
+        
         public int CustomerId { get; set; }
 
         [Required]

@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace DBProject_Shop.Models
 {
     public class Customer
-    {
-        // PK
+    {        
         public int CustomerId {  get; set; }
         
         [Required, MaxLength(100)]

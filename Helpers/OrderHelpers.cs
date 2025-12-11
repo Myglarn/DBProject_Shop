@@ -57,6 +57,7 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine();
                 Console.WriteLine("-----------");
                 Console.WriteLine("Choose a product to add to your order");
+                
                 await ProductHelpers.ListProductsAsync();
 
                 Console.WriteLine();
@@ -67,13 +68,13 @@ namespace DBProject_Shop.Helpers
                     Console.WriteLine("Invalid product id!, please try again");
                     continue;
                 }
-
-                var product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == prodId);
-                if (product == null)
+                if (!await db.Products.AnyAsync(p => p.ProductId == prodId))
                 {
                     Console.WriteLine("Product not found, please try again");
                     continue;
                 }
+
+                var product = await db.Products.FirstOrDefaultAsync(p => p.ProductId == prodId);
 
                 Console.WriteLine();
                 Console.WriteLine("-----------");
@@ -83,12 +84,12 @@ namespace DBProject_Shop.Helpers
                     Console.WriteLine("You need to input numbers, please try again");
                     continue;
                 }
-                if (qty <= 0)
+                if (qty < 0)
                 {
                     Console.WriteLine("Quantity must be positive, please try again");
                     continue;
                 }
-                if (await db.Products.AnyAsync(p => p.StockQuantity < qty))
+                if (product.StockQuantity < qty)
                 {
                     Console.WriteLine("Quantity cannot exceed stock quantity");
                     continue;
@@ -176,7 +177,7 @@ namespace DBProject_Shop.Helpers
 
             Console.WriteLine();
             Console.WriteLine("-----------");
-            Console.WriteLine("Please choose a page number");
+            Console.WriteLine("Please choose a page number to start from");
             if (!int.TryParse(Console.ReadLine(), out var page))
             {
                 Console.WriteLine("Invalid input, please use numbers");
@@ -345,7 +346,11 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Please try again, use numbers");
                 return;
-            }     
+            }
+            if (!await db.Orders.AnyAsync(o => o.OrderId == orderId))
+            {
+                Console.WriteLine("No matching order found!");
+            }
 
             var orderToDelete = await db.Orders.FirstOrDefaultAsync(o => o.OrderId == orderId);
             db.Orders.Remove(orderToDelete);

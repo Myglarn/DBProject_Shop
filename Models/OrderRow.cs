@@ -8,14 +8,11 @@ using System.Threading.Tasks;
 namespace DBProject_Shop.Models
 {
     public class OrderRow
-    {
-        // PK
-        public int OrderRowId { get; set; }
-       
-        // FK
-        public int OrderId { get; set; }
+    {        
+        public int OrderRowId { get; set; }       
         
-        // FK
+        public int OrderId { get; set; }        
+        
         public int ProductId { get; set; }
         
         [Required]

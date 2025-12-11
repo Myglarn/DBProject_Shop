@@ -8,8 +8,7 @@ using System.Threading.Tasks;
 namespace DBProject_Shop.Models
 {
     public class Product
-    {
-        // PK
+    {        
         public int ProductId { get; set; }
         
         [Required, MaxLength(150)]
@@ -21,9 +20,8 @@ namespace DBProject_Shop.Models
         [Required]
         public decimal ProductPrice { get; set; }
         
-        public List<OrderRow> OrderRowsList { get; set; } = new();
-        
-        // FK
+        public List<OrderRow> OrderRowsList { get; set; } = new();        
+       
         public int CategoryId { get; set; }
         
         public Category? Category { get; set; }      

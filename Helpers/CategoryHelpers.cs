@@ -1,5 +1,6 @@
 ﻿using DBProject_Shop.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -133,6 +134,11 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("Invalid input, please use numbers");
                 return;
             }
+            if (!await db.Categories.AnyAsync(c => c.CategoryId == catId))
+            {
+                Console.WriteLine("Category not found, please try again");
+                return;
+            }
             var categoryToEdit = await db.Categories.FirstAsync(c => c.CategoryId == catId);
 
             Console.WriteLine();
@@ -204,8 +210,13 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Invalid input, please use numbers");
                 return;
-            }            
-            
+            }
+            if (!await db.Categories.AnyAsync(c => c.CategoryId == cId))
+            {
+                Console.WriteLine("Category not found, please try again");
+                return;
+            }
+
             var categoryToDelete = await db.Categories.FirstAsync(c => c.CategoryId == cId);            
             db.Categories.Remove(categoryToDelete);
 

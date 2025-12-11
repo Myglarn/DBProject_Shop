@@ -1,5 +1,6 @@
 ﻿using DBProject_Shop.Models;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Scaffolding.Metadata;
 using System;
 using System.Collections.Generic;
 using System.Data.Common;
@@ -20,13 +21,22 @@ namespace DBProject_Shop.Helpers
         //-----------------
         // CREATE
         //-----------------
+
+        /// <summary>
+        /// Method for adding products to the database.
+        /// Lets you set:
+        /// - Name
+        /// - Price
+        /// - Stock quantity
+        /// - Category
+        /// </summary>
+        /// <returns></returns>
         public static async Task AddProductAsync() 
         {
             using var db = new ShopContext();
             var choice = "";
             while (choice != "n")
             {
-
                 Console.WriteLine();
                 Console.WriteLine("-----------");
                 Console.WriteLine("Enter product name: ");
@@ -49,9 +59,9 @@ namespace DBProject_Shop.Helpers
                     Console.WriteLine("Invalid input, please use numbers");
                     continue;
                 }
-                else if (prodPrice < 0)
+                else if (prodPrice <= 0)
                 {
-                    Console.WriteLine("Product price can't be negative, please try agian");
+                    Console.WriteLine("Product price can't be negative or 0, please try agian");
                     return;
                 }
 
@@ -129,6 +139,11 @@ namespace DBProject_Shop.Helpers
         //-----------------
         // READ
         //-----------------
+
+        /// <summary>
+        /// Method for listing all products in the database
+        /// </summary>
+        /// <returns></returns>
         public static async Task ListProductsAsync()
         {
             using var db = new ShopContext();
@@ -157,7 +172,7 @@ namespace DBProject_Shop.Helpers
         {
             using var db = new ShopContext();
 
-            Console.WriteLine("Please choose a category to list its products (id#)");
+            Console.WriteLine("Please choose a category id to list its products");
             var categories = await db.Categories.AsNoTracking().ToListAsync();
             foreach (var category in categories)
             {
@@ -169,6 +184,12 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("Invalid input, please use numbers");
                 return;
             }
+            if (!await db.Categories.AnyAsync(c => c.CategoryId == cId))
+            {
+                Console.WriteLine("Category not found, please try agian");
+                return;
+            }
+
             var catName = await db.Categories.FirstAsync(c => c.CategoryId == cId);
             var prods = await db.Products.Where(c => c.CategoryId == cId).ToListAsync();
 
@@ -183,6 +204,14 @@ namespace DBProject_Shop.Helpers
         //-----------------
         // UPDATE
         //-----------------
+
+        /// <summary>
+        /// Method for editing a products:
+        /// - Name
+        /// - Price
+        /// - Stock quantity
+        /// </summary>
+        /// <returns></returns>
         public static async Task EditProductAsync()
         {
             using var db = new ShopContext();
@@ -196,12 +225,13 @@ namespace DBProject_Shop.Helpers
             {
                 Console.WriteLine("Invalid input, please use numbers");
             }
-
-            var prodToEdit = await db.Products.FirstAsync(p => p.ProductId == pId);
             if (!await db.Products.AnyAsync(p => p.ProductId == pId))
             {
-                Console.WriteLine("No such product found!");
-            }            
+                Console.WriteLine("No matching product found!");
+            }
+
+            var prodToEdit = await db.Products.FirstAsync(p => p.ProductId == pId);
+              
 
             var whileChoice = "";
             while (whileChoice != "n")
@@ -253,9 +283,9 @@ namespace DBProject_Shop.Helpers
                             Console.WriteLine("Invalid input, please try again");
                             return;
                         }
-                        if (newPrice < 0)
+                        if (newPrice <= 0)
                         {
-                            Console.WriteLine("Price can't be a negative number");
+                            Console.WriteLine("Price can't be a negative or 0, please try again");
                         }
                         prodToEdit.ProductPrice = newPrice;
 
@@ -283,7 +313,6 @@ namespace DBProject_Shop.Helpers
                         }
                         if (newQty < 0)
                         {
-
                             Console.WriteLine("Stock quantity can't be a negative number, please try again");
                             return;
                         }
@@ -313,6 +342,11 @@ namespace DBProject_Shop.Helpers
         //-----------------
         // DELETE
         //-----------------
+
+        /// <summary>
+        /// Method for removing a product from the database
+        /// </summary>
+        /// <returns></returns>
         public static async Task DeleteProductAsync()
         {
             using var db = new ShopContext();
@@ -325,10 +359,15 @@ namespace DBProject_Shop.Helpers
                 Console.WriteLine("Invalid input, please try again");
                 return;
             }
+            if (!await db.Products.AnyAsync(p => p.ProductId == pId))
+            {
+                Console.WriteLine("No matching product id found, please try again");
+                return;
+            }
 
             var prodToDelete = await db.Products.FirstAsync(p => p.ProductId == pId);
-
             db.Products.Remove(prodToDelete);
+
             try
             {
                 await db.SaveChangesAsync();
@@ -339,8 +378,7 @@ namespace DBProject_Shop.Helpers
             catch (DbUpdateException ex)
             {
                 Console.WriteLine("Db Error: " + ex.GetBaseException().Message);
-            }
-            
+            }            
         }
     }
 }
